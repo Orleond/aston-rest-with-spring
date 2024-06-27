@@ -8,5 +8,5 @@ import org.springframework.data.jpa.repository.Query;
 public interface TypeRepository extends JpaRepository<TypeEntity, Integer> {
     @Modifying
     @Query("UPDATE TypeEntity SET name = :name WHERE id = :id")
-    void changeType(String name);
+    void changeType(int id, String name);
 }
