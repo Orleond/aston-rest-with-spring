@@ -1,15 +1,17 @@
 package com.example.restservisewithspring.controller;
 
 import com.example.restservisewithspring.dto.ProductDto;
-import com.example.restservisewithspring.entity.ProductEntity;
 import com.example.restservisewithspring.service.ProductService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
+import java.util.List;
+import java.util.logging.Logger;
 
 @RestController
+@RequestMapping("/products")
 public class ProductController {
 
     private final ProductService productService;
@@ -20,15 +22,16 @@ public class ProductController {
 
     @GetMapping(value = "/{id}")
     public ResponseEntity<ProductDto> getProduct(@PathVariable int id) {
-        var productDto = ProductDto.of(1, 1, 1, 1, new BigDecimal(199.99));
-        if (productDto.getProductId() == id)
-            return ResponseEntity.status(HttpStatus.ACCEPTED).body(productDto);
+        ProductDto product = productService.getProduct(id);
+        if (product != null)
+            return ResponseEntity.status(HttpStatus.ACCEPTED).body(product);
         return ResponseEntity.badRequest().body(null);
     }
 
     @PostMapping("/")
     public ResponseEntity<ProductDto> postProduct(@RequestBody ProductDto productDto) {
-        return ResponseEntity.status(HttpStatus.ACCEPTED).body(productDto);
+        var product = productService.postProduct(productDto);
+        return ResponseEntity.status(HttpStatus.ACCEPTED).body(product);
     }
 
     @PutMapping(value = "/{id}")
@@ -37,30 +40,26 @@ public class ProductController {
                                                  @RequestParam(required = false) Integer brandId,
                                                  @RequestParam(required = false) Integer modelId,
                                                  @RequestParam(required = false) BigDecimal price) {
-        try {
-            ProductDto productDto = ProductDto.of(id, 1, 1, 1, new BigDecimal(199.99));
-            if (typeId != null) productDto.setTypeId(typeId);
-            if (brandId != null) productDto.setBrandId(brandId);
-            if (modelId != null) productDto.setModelId(modelId);
-            if (price != null) productDto.setPrice(price);
-            return ResponseEntity.status(HttpStatus.ACCEPTED).body(productDto);
-        } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().body(null);
-        }
+        var productDto = ProductDto.of(id, null, null, null, null);
+        if (typeId != null) productDto.setTypeId(typeId);
+        if (brandId != null) productDto.setBrandId(brandId);
+        if (modelId != null) productDto.setModelId(modelId);
+        if (price != null) productDto.setPrice(price);
+        var returnedProductDto = productService.putProduct(productDto);
+
+        return ResponseEntity.status(HttpStatus.ACCEPTED).body(returnedProductDto);
     }
 
     @DeleteMapping(value = "/{id}")
-    public ResponseEntity<ProductDto> deleteProduct(@PathVariable int id) {
-        var productDto = ProductDto.of(1, 1, 1, 1, new BigDecimal(199.99));
-        if (productDto.getProductId() == id) {
-            productDto = null;
-            return ResponseEntity.status(HttpStatus.ACCEPTED).body(productDto);
-        }
-        return ResponseEntity.badRequest().body(null);
+    public ResponseEntity<Boolean> deleteProduct(@PathVariable int id) {
+        var productDto = productService.getProduct(id);
+        boolean isDeleting = productService.deleteProduct(productDto);
+        if (isDeleting) return ResponseEntity.status(HttpStatus.ACCEPTED).body(true);
+        return ResponseEntity.badRequest().body(false);
     }
 
     @GetMapping(value = "/all")
-    public Iterable<ProductDto> getAllProducts() {
+    public List<ProductDto> getAllProducts() {
         return productService.getAllProducts();
     }
 

@@ -45,7 +45,7 @@ VALUES (1, 1),
        (4, 15),
        (4, 16);
 
-INSERT INTO product(type, brand_id, model_id, price)
+INSERT INTO product(type_id, brand_id, model_id, price)
 VALUES (2, 1, 1, 249.00),
        (2, 1, 2, 354.55),
        (2, 1, 3, 259.00),

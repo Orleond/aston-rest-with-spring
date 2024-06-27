@@ -13,11 +13,10 @@ public class ProductMapper {
     }
 
     public static ProductEntity mapToProductEntity(ProductDto productDto) {
-//        return new ProductEntity (productDto.getProductId(),
-//                productDto.getTypeId(),
-//                productDto.getBrandId(),
-//                productDto.getModelId(),
-//                productDto.getPrice());
-        return null;
+        return new ProductEntity(productDto.getProductId(),
+                productDto.getTypeId(),
+                productDto.getBrandId(),
+                productDto.getModelId(),
+                productDto.getPrice());
     }
 }

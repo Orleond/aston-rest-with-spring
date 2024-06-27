@@ -1,10 +1,13 @@
 package com.example.restservisewithspring.dto;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 @Getter
 @Setter
+@EqualsAndHashCode
 public class BrandDto {
     private Integer id;
     private String name;
